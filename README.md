@@ -29,3 +29,9 @@ To run on your android device
 ![Image of demo](https://github.com/xshirl1027/bookplaces2/blob/master/images/5.png)
 # Desktop Version
 ![Image of demo](https://github.com/xshirl1027/bookplaces2/blob/master/images/6.png)
+# Desktop Version
+![Image of demo](https://github.com/xshirl1027/bookplaces2/blob/master/images/7.png)
+# Desktop Version
+![Image of demo](https://github.com/xshirl1027/bookplaces2/blob/master/images/8.png)
+# Desktop Version
+![Image of demo](https://github.com/xshirl1027/bookplaces2/blob/master/images/9.png)

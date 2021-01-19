@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AdminGuard } from './auth/admin.guard';
 
 import { AuthGuard } from './auth/auth.guard';
 
@@ -18,11 +19,13 @@ const routes: Routes = [
   },
   {
     path: 'account',
-    loadChildren: () => import('./account/account.module').then( m => m.AccountPageModule)
+    loadChildren: () => import('./account/account.module').then( m => m.AccountPageModule),
+    canLoad: [AuthGuard]
   },
   {
     path: 'admin',
-    loadChildren: () => import('./admin/admin.module').then( m => m.AdminPageModule)
+    loadChildren: () => import('./admin/admin.module').then( m => m.AdminPageModule),
+    canLoad: [AdminGuard]
   }
 ];
 

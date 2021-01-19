@@ -133,7 +133,7 @@
       /* harmony default export */
 
 
-      __webpack_exports__["default"] = "<ion-app>\n  <ion-menu side=\"start\">\n    <ion-header>\n      <ion-toolbar>\n        <ion-title>\n          CampBnB\n        </ion-title>\n      </ion-toolbar>\n    </ion-header>\n\n    <ion-content>\n      <ion-list>\n        <ion-menu-toggle>\n          <ion-item lines=\"none\" routerLink=\"/places/tabs/discover\">\n            <ion-icon name=\"business\" slot=\"start\"></ion-icon>\n            <ion-label>Discover Camps</ion-label>\n          </ion-item>\n        </ion-menu-toggle>\n        <ion-menu-toggle>\n          <ion-item lines=\"none\" routerLink=\"/bookings\">\n            <ion-icon name=\"checkbox-outline\" slot=\"start\"></ion-icon>\n            <ion-label>Your Bookings</ion-label>\n          </ion-item>\n        </ion-menu-toggle>\n        <ion-menu-toggle>\n          <ion-item lines=\"none\" routerLink=\"/account\">\n            <ion-icon name=\"settings-outline\" slot=\"start\"></ion-icon>\n            <ion-label>Your Account</ion-label>\n          </ion-item>\n        </ion-menu-toggle>\n        <ion-menu-toggle>\n          <ion-item lines=\"none\" (click)=\"onLogout()\" button>\n            <ion-icon name=\"exit\" slot=\"start\"></ion-icon>\n            <ion-label>Logout</ion-label>\n          </ion-item>\n        </ion-menu-toggle>\n      </ion-list>\n    </ion-content>\n  </ion-menu>\n  <ion-router-outlet main></ion-router-outlet>\n</ion-app>\n";
+      __webpack_exports__["default"] = "<ion-app>\n  <ion-menu side=\"start\">\n    <ion-header>\n      <ion-toolbar>\n        <ion-title>\n          CampBnB\n        </ion-title>\n      </ion-toolbar>\n    </ion-header>\n\n    <ion-content>\n      <ion-list>\n        <ion-menu-toggle>\n          <ion-item lines=\"none\" routerLink=\"/places/tabs/discover\">\n            <ion-icon name=\"business\" slot=\"start\"></ion-icon>\n            <ion-label>Discover Camps</ion-label>\n          </ion-item>\n        </ion-menu-toggle>\n        <ion-menu-toggle>\n          <ion-item lines=\"none\" routerLink=\"/bookings\">\n            <ion-icon name=\"checkbox-outline\" slot=\"start\"></ion-icon>\n            <ion-label>Your Bookings</ion-label>\n          </ion-item>\n        </ion-menu-toggle>\n        <ion-menu-toggle>\n          <ion-item lines=\"none\" routerLink=\"/account\">\n            <ion-icon name=\"settings-outline\" slot=\"start\"></ion-icon>\n            <ion-label>Your Account</ion-label>\n          </ion-item>\n        </ion-menu-toggle>\n        <ion-menu-toggle *ngIf=\"isAdmin\">\n          <ion-item lines=\"none\" routerLink=\"/admin\">\n            <ion-icon name=\"settings-outline\" slot=\"start\"></ion-icon>\n            <ion-label>Admin Panel</ion-label>\n          </ion-item>\n        </ion-menu-toggle>\n        <ion-menu-toggle>\n          <ion-item lines=\"none\" (click)=\"onLogout()\" button>\n            <ion-icon name=\"exit\" slot=\"start\"></ion-icon>\n            <ion-label>Logout</ion-label>\n          </ion-item>\n        </ion-menu-toggle>\n      </ion-list>\n    </ion-content>\n  </ion-menu>\n  <ion-router-outlet main></ion-router-outlet>\n</ion-app>\n";
       /***/
     },
 
@@ -237,7 +237,13 @@
       /* harmony import */
 
 
-      var _auth_auth_guard__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
+      var _auth_admin_guard__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
+      /*! ./auth/admin.guard */
+      "./src/app/auth/admin.guard.ts");
+      /* harmony import */
+
+
+      var _auth_auth_guard__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
       /*! ./auth/auth.guard */
       "./src/app/auth/auth.guard.ts");
 
@@ -267,19 +273,19 @@
             return m.PlacesPageModule;
           });
         },
-        canLoad: [_auth_auth_guard__WEBPACK_IMPORTED_MODULE_3__["AuthGuard"]]
+        canLoad: [_auth_auth_guard__WEBPACK_IMPORTED_MODULE_4__["AuthGuard"]]
       }, {
         path: 'bookings',
         loadChildren: function loadChildren() {
           return Promise.all(
           /*! import() | bookings-bookings-module */
-          [__webpack_require__.e("common"), __webpack_require__.e("bookings-bookings-module")]).then(__webpack_require__.bind(null,
+          [__webpack_require__.e("default~bookings-bookings-module~discover-place-detail-place-detail-module"), __webpack_require__.e("bookings-bookings-module")]).then(__webpack_require__.bind(null,
           /*! ./bookings/bookings.module */
           "./src/app/bookings/bookings.module.ts")).then(function (m) {
             return m.BookingsPageModule;
           });
         },
-        canLoad: [_auth_auth_guard__WEBPACK_IMPORTED_MODULE_3__["AuthGuard"]]
+        canLoad: [_auth_auth_guard__WEBPACK_IMPORTED_MODULE_4__["AuthGuard"]]
       }, {
         path: 'account',
         loadChildren: function loadChildren() {
@@ -290,11 +296,20 @@
           "./src/app/account/account.module.ts")).then(function (m) {
             return m.AccountPageModule;
           });
-        }
+        },
+        canLoad: [_auth_auth_guard__WEBPACK_IMPORTED_MODULE_4__["AuthGuard"]]
       }, {
-        path: '**',
-        redirectTo: 'places',
-        pathMatch: 'full'
+        path: 'admin',
+        loadChildren: function loadChildren() {
+          return __webpack_require__.e(
+          /*! import() | admin-admin-module */
+          "admin-admin-module").then(__webpack_require__.bind(null,
+          /*! ./admin/admin.module */
+          "./src/app/admin/admin.module.ts")).then(function (m) {
+            return m.AdminPageModule;
+          });
+        },
+        canLoad: [_auth_admin_guard__WEBPACK_IMPORTED_MODULE_3__["AdminGuard"]]
       }];
 
       var AppRoutingModule = function AppRoutingModule() {
@@ -372,6 +387,7 @@
           this.authService = authService;
           this.router = router;
           this.previousAuthState = false;
+          this.isAdmin = false;
           this.initializeApp();
         }
 
@@ -399,11 +415,18 @@
 
               _this.previousAuthState = isAuth;
             });
+            this.adminSub = this.authService.userIsAdmin.subscribe(function (isAdmin) {
+              _this.isAdmin = isAdmin;
+            });
+            this.authService.checkUserIsAdmin().subscribe(function (isAdmin) {
+              _this.isAdmin = isAdmin;
+            });
           }
         }, {
           key: "onLogout",
           value: function onLogout() {
             this.authService.logout();
+            this.isAdmin = null;
             this.router.navigateByUrl('/auth');
           }
         }, {
@@ -411,6 +434,10 @@
           value: function ngOnDestroy() {
             if (this.authSub) {
               this.authSub.unsubscribe();
+            }
+
+            if (this.adminSub) {
+              this.adminSub.unsubscribe();
             }
           }
         }]);
@@ -541,6 +568,102 @@
     },
 
     /***/
+    "./src/app/auth/admin.guard.ts":
+    /*!*************************************!*\
+      !*** ./src/app/auth/admin.guard.ts ***!
+      \*************************************/
+
+    /*! exports provided: AdminGuard */
+
+    /***/
+    function srcAppAuthAdminGuardTs(module, __webpack_exports__, __webpack_require__) {
+      "use strict";
+
+      __webpack_require__.r(__webpack_exports__);
+      /* harmony export (binding) */
+
+
+      __webpack_require__.d(__webpack_exports__, "AdminGuard", function () {
+        return AdminGuard;
+      });
+      /* harmony import */
+
+
+      var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
+      /*! tslib */
+      "./node_modules/tslib/tslib.es6.js");
+      /* harmony import */
+
+
+      var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
+      /*! @angular/core */
+      "./node_modules/@angular/core/__ivy_ngcc__/fesm2015/core.js");
+      /* harmony import */
+
+
+      var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+      /*! @angular/router */
+      "./node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js");
+      /* harmony import */
+
+
+      var rxjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
+      /*! rxjs */
+      "./node_modules/rxjs/_esm2015/index.js");
+      /* harmony import */
+
+
+      var rxjs_operators__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
+      /*! rxjs/operators */
+      "./node_modules/rxjs/_esm2015/operators/index.js");
+      /* harmony import */
+
+
+      var _auth_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(
+      /*! ./auth.service */
+      "./src/app/auth/auth.service.ts");
+
+      var AdminGuard = /*#__PURE__*/function () {
+        function AdminGuard(authService, router) {
+          _classCallCheck(this, AdminGuard);
+
+          this.authService = authService;
+          this.router = router;
+        }
+
+        _createClass(AdminGuard, [{
+          key: "canLoad",
+          value: function canLoad(route, segments) {
+            var _this2 = this;
+
+            return this.authService.checkUserIsAdmin().pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["take"])(1), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["switchMap"])(function (isAdmin) {
+              if (!isAdmin) {
+                _this2.router.navigateByUrl('/places/tabs/discover');
+              } else {
+                return Object(rxjs__WEBPACK_IMPORTED_MODULE_3__["of"])(isAdmin);
+              }
+            }));
+          }
+        }]);
+
+        return AdminGuard;
+      }();
+
+      AdminGuard.ctorParameters = function () {
+        return [{
+          type: _auth_service__WEBPACK_IMPORTED_MODULE_5__["AuthService"]
+        }, {
+          type: _angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"]
+        }];
+      };
+
+      AdminGuard = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
+        providedIn: 'root'
+      })], AdminGuard);
+      /***/
+    },
+
+    /***/
     "./src/app/auth/auth.guard.ts":
     /*!************************************!*\
       !*** ./src/app/auth/auth.guard.ts ***!
@@ -607,17 +730,17 @@
         _createClass(AuthGuard, [{
           key: "canLoad",
           value: function canLoad(route, segments) {
-            var _this2 = this;
+            var _this3 = this;
 
             return this.authService.userIsAuthenticated.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["take"])(1), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["switchMap"])(function (isAuthenticated) {
               if (!isAuthenticated) {
-                return _this2.authService.autoLogin();
+                return _this3.authService.autoLogin();
               } else {
                 return Object(rxjs__WEBPACK_IMPORTED_MODULE_3__["of"])(isAuthenticated);
               }
             }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(function (isAuthenticated) {
               if (!isAuthenticated) {
-                _this2.router.navigateByUrl('/auth');
+                _this3.router.navigateByUrl('/auth');
               }
             }));
           }
@@ -714,12 +837,31 @@
 
           this.http = http;
           this._user = new rxjs__WEBPACK_IMPORTED_MODULE_3__["BehaviorSubject"](null);
+          this._adminUsers = new rxjs__WEBPACK_IMPORTED_MODULE_3__["BehaviorSubject"](null);
+          this._userIsAdmin = new rxjs__WEBPACK_IMPORTED_MODULE_3__["BehaviorSubject"](false);
         }
 
         _createClass(AuthService, [{
+          key: "checkUserIsAdmin",
+          value: function checkUserIsAdmin() {
+            var _this4 = this;
+
+            var tempAdminUsers;
+            return this.fetchAdminUsers().pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["switchMap"])(function (adminUsers) {
+              tempAdminUsers = adminUsers;
+              return _this4.userId;
+            }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["take"])(1), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["map"])(function (userId) {
+              if (tempAdminUsers[userId]) {
+                return true;
+              } else {
+                return false;
+              }
+            }));
+          }
+        }, {
           key: "autoLogin",
           value: function autoLogin() {
-            var _this3 = this;
+            var _this5 = this;
 
             return Object(rxjs__WEBPACK_IMPORTED_MODULE_3__["from"])(_capacitor_core__WEBPACK_IMPORTED_MODULE_5__["Plugins"].Storage.get({
               key: 'authData'
@@ -739,7 +881,7 @@
               return user;
             }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(function (user) {
               if (user) {
-                _this3._user.next(user);
+                _this5._user.next(user);
               }
             }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["map"])(function (user) {
               return !!user;
@@ -778,13 +920,77 @@
             }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(this.logout.bind(this)));
           }
         }, {
+          key: "deleteUser",
+          value: function deleteUser(id) {
+            return this.http.post("https://identitytoolkit.googleapis.com/v1/accounts:update?key=".concat(_environments_environment__WEBPACK_IMPORTED_MODULE_6__["environment"].firebaseAPIKey), {
+              idToken: id
+            });
+          }
+        }, {
           key: "login",
           value: function login(email, password) {
+            var _this6 = this;
+
+            var userId;
             return this.http.post("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=".concat(_environments_environment__WEBPACK_IMPORTED_MODULE_6__["environment"].firebaseAPIKey), {
               email: email,
               password: password,
               returnSecureToken: true
-            }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(this.setUserData.bind(this)));
+            }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(this.setUserData.bind(this)), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["switchMap"])(function (user) {
+              userId = user.localId;
+              return _this6.fetchAdminUsers();
+            }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(function (adminUsers) {
+              _this6._userIsAdmin.next(userId in adminUsers);
+            }));
+          }
+        }, {
+          key: "makeUserAdmin",
+          value: function makeUserAdmin(userId) {
+            var _this7 = this;
+
+            var name;
+            return this.http.post("".concat(_environments_environment__WEBPACK_IMPORTED_MODULE_6__["environment"].firebaseUrl, "/adminUsers.json"), {
+              id: userId
+            }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["switchMap"])(function (res) {
+              name = res['name'];
+              return _this7.adminUsers;
+            }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["take"])(1), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(function (adminUsers) {
+              adminUsers[userId] = name;
+
+              _this7._adminUsers.next(adminUsers);
+            }));
+          }
+        }, {
+          key: "deleteUserAdmin",
+          value: function deleteUserAdmin(userId, docId) {
+            var _this8 = this;
+
+            return this.http["delete"]("".concat(_environments_environment__WEBPACK_IMPORTED_MODULE_6__["environment"].firebaseUrl, "/adminUsers/").concat(docId, ".json")).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["switchMap"])(function (res) {
+              return _this8.adminUsers;
+            }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["take"])(1), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["map"])(function (adminUsers) {
+              delete adminUsers[userId];
+
+              _this8._adminUsers.next(adminUsers);
+            }));
+          }
+        }, {
+          key: "fetchAdminUsers",
+          value: function fetchAdminUsers() {
+            var _this9 = this;
+
+            return this.http.get("".concat(_environments_environment__WEBPACK_IMPORTED_MODULE_6__["environment"].firebaseUrl, "/adminUsers.json")).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["map"])(function (resData) {
+              var adminUsers = {};
+
+              for (var key in resData) {
+                if (resData.hasOwnProperty(key)) {
+                  adminUsers[resData[key]['id']] = key;
+                }
+              }
+
+              return adminUsers;
+            }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(function (adminUsers) {
+              _this9._adminUsers.next(adminUsers);
+            }));
           }
         }, {
           key: "setUserData",
@@ -795,15 +1001,8 @@
             this._user.next(new _user_model__WEBPACK_IMPORTED_MODULE_7__["User"](resData.localId, resData.displayName, resData.email, resData.refreshToken, expirationDate, resData.idToken));
 
             this.StoreAuthData(resData.localId, resData.displayName, resData.refreshToken, expirationDate.toISOString(), resData.email, resData.idToken);
-          } // updateUserData(resData: AuthResponseData) {
-          //   console.log(resData);
-          //   this._user.pipe(take(1),map((user)=>{
-          //     //const expirationDate = new Date(new Date().getTime() + (+resData.expiresIn * 1000));
-          //     this._user.next(new User(user.id, resData.displayName, resData.email, user.token, user.tokenExpirationDate, resData.idToken));
-          //     this.StoreAuthData(resData.localId, resData.displayName, resData.refreshToken, user.tokenExpirationDate.toISOString(), resData.email, resData.idToken);
-          //   }));
-          //    }
-
+            return resData.localId;
+          }
         }, {
           key: "logout",
           value: function logout() {
@@ -812,6 +1011,8 @@
             }
 
             this._user.next(null);
+
+            this._adminUsers.next(null);
 
             _capacitor_core__WEBPACK_IMPORTED_MODULE_5__["Plugins"].Storage.remove({
               key: 'authData'
@@ -823,19 +1024,6 @@
             if (this.activeLogoutTimer) {
               clearTimeout(this.activeLogoutTimer);
             }
-          }
-        }, {
-          key: "autoLogout",
-          value: function autoLogout(duration) {
-            var _this4 = this;
-
-            if (this.activeLogoutTimer) {
-              clearTimeout(this.activeLogoutTimer);
-            }
-
-            this.activeLogoutTimer = setTimeout(function () {
-              _this4.logout();
-            }, duration);
           }
         }, {
           key: "StoreAuthData",
@@ -855,16 +1043,9 @@
             });
           }
         }, {
-          key: "UpdateUserData",
-          value: function UpdateUserData(displayName) {
-            var data = JSON.stringify(_capacitor_core__WEBPACK_IMPORTED_MODULE_5__["Plugins"].Storage.get({
-              key: 'authData'
-            }));
-
-            _capacitor_core__WEBPACK_IMPORTED_MODULE_5__["Plugins"].Storage.set({
-              key: 'authData',
-              value: data
-            });
+          key: "userIsAdmin",
+          get: function get() {
+            return this._userIsAdmin.asObservable();
           }
         }, {
           key: "userIsAuthenticated",
@@ -894,6 +1075,17 @@
             return this._user.asObservable().pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["map"])(function (user) {
               if (user) {
                 return user;
+              } else {
+                return null;
+              }
+            }));
+          }
+        }, {
+          key: "adminUsers",
+          get: function get() {
+            return this._adminUsers.asObservable().pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["map"])(function (adminUsers) {
+              if (adminUsers) {
+                return adminUsers;
               } else {
                 return null;
               }
@@ -1053,43 +1245,43 @@
         }, {
           key: "ngAfterViewInit",
           value: function ngAfterViewInit() {
-            var _this5 = this;
+            var _this10 = this;
 
             this.mapModalService.getGoogleGeoLocation().subscribe(function (resData) {
-              if (!_this5.center) {
+              if (!_this10.center) {
                 if (!resData && !resData['location']) {
                   console.error('Cannot get current location');
                   return;
                 }
 
-                _this5.center = resData['location'];
+                _this10.center = resData['location'];
               }
 
               console.log(resData);
 
-              _this5.getGoogleMaps().then(function (googleMaps) {
-                var mapEl = _this5.mapElementRef.nativeElement;
+              _this10.getGoogleMaps().then(function (googleMaps) {
+                var mapEl = _this10.mapElementRef.nativeElement;
                 var map = new googleMaps.Map(mapEl, {
-                  center: _this5.center,
+                  center: _this10.center,
                   zoom: 16
                 });
-                _this5.googleMaps = googleMaps.event.addListenerOnce(map, 'idle', function () {
-                  _this5.renderer.addClass(mapEl, 'visible');
+                _this10.googleMaps = googleMaps.event.addListenerOnce(map, 'idle', function () {
+                  _this10.renderer.addClass(mapEl, 'visible');
                 });
 
-                if (_this5.selectable) {
-                  _this5.clickListener = map.addListener('click', function (event) {
-                    _this5.center = {
+                if (_this10.selectable) {
+                  _this10.clickListener = map.addListener('click', function (event) {
+                    _this10.center = {
                       lat: event.latLng.lat(),
                       lng: event.latLng.lng()
                     };
 
-                    _this5.modalCtrl.dismiss(_this5.center);
+                    _this10.modalCtrl.dismiss(_this10.center);
                   });
                 } else {}
 
                 var marker = new googleMaps.Marker({
-                  position: _this5.center,
+                  position: _this10.center,
                   map: map,
                   title: 'Picked Location'
                 });
@@ -1401,7 +1593,7 @@
         }, {
           key: "onFileChosen",
           value: function onFileChosen($event) {
-            var _this6 = this;
+            var _this11 = this;
 
             var pickedFile = $event.target.files[0];
 
@@ -1413,9 +1605,9 @@
 
             fr.onload = function () {
               var dataUrl = fr.result.toString();
-              _this6.selectedImage = dataUrl;
+              _this11.selectedImage = dataUrl;
 
-              _this6.imagePick.emit(dataUrl);
+              _this11.imagePick.emit(dataUrl);
             };
 
             fr.readAsDataURL(pickedFile);
@@ -1423,14 +1615,14 @@
         }, {
           key: "onPickImage",
           value: function onPickImage() {
-            var _this7 = this;
+            var _this12 = this;
 
             this.actionSheetCtrl.create({
               header: 'Choose an Action',
               buttons: [{
                 text: 'Choose from file',
                 handler: function handler() {
-                  _this7.filePicker.nativeElement.click();
+                  _this12.filePicker.nativeElement.click();
 
                   return;
                 }
@@ -1445,12 +1637,12 @@
                     width: 200,
                     resultType: _capacitor_core__WEBPACK_IMPORTED_MODULE_3__["CameraResultType"].DataUrl
                   }).then(function (image) {
-                    _this7.selectedImage = image.dataUrl;
+                    _this12.selectedImage = image.dataUrl;
 
-                    _this7.imagePick.emit(image.dataUrl);
+                    _this12.imagePick.emit(image.dataUrl);
                   })["catch"](function (error) {
-                    if (_this7.usePicker) {
-                      _this7.filePicker.nativeElement.click();
+                    if (_this12.usePicker) {
+                      _this12.filePicker.nativeElement.click();
                     }
 
                     return false;
@@ -1609,19 +1801,19 @@
         }, {
           key: "onPickLocation",
           value: function onPickLocation() {
-            var _this8 = this;
+            var _this13 = this;
 
             this.actionSheetCtrl.create({
               header: 'Please Choose',
               buttons: [{
                 text: 'Auto-Locate',
                 handler: function handler() {
-                  _this8.locateUsers();
+                  _this13.locateUsers();
                 }
               }, {
                 text: 'Pick on Map',
                 handler: function handler() {
-                  _this8.openMap();
+                  _this13.openMap();
                 }
               }, {
                 text: 'cancel',
@@ -1634,11 +1826,11 @@
         }, {
           key: "locateUsers",
           value: function locateUsers() {
-            var _this9 = this;
+            var _this14 = this;
 
             this.mapModalService.getGoogleGeoLocation().subscribe(function (geoPosition) {
               if (!geoPosition && !geoPosition['location']) {
-                _this9.alertCtrl.create({
+                _this14.alertCtrl.create({
                   header: "Location Error",
                   message: "Error fetching Location"
                 }).then(function (alertEl) {
@@ -1648,25 +1840,25 @@
                 return;
               }
 
-              _this9.pickedLocation.lat = geoPosition['location'].lat;
-              _this9.pickedLocation.lng = geoPosition['location'].lng;
+              _this14.pickedLocation.lat = geoPosition['location'].lat;
+              _this14.pickedLocation.lng = geoPosition['location'].lng;
 
-              _this9.mapModalService.getAddress(_this9.pickedLocation).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["switchMap"])(function (address) {
-                _this9.pickedLocation.address = address;
-                return Object(rxjs__WEBPACK_IMPORTED_MODULE_6__["of"])(_this9.mapModalService.getStaticMapImageURL(_this9.pickedLocation.lat, _this9.pickedLocation.lng, 14));
+              _this14.mapModalService.getAddress(_this14.pickedLocation).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["switchMap"])(function (address) {
+                _this14.pickedLocation.address = address;
+                return Object(rxjs__WEBPACK_IMPORTED_MODULE_6__["of"])(_this14.mapModalService.getStaticMapImageURL(_this14.pickedLocation.lat, _this14.pickedLocation.lng, 14));
               })).subscribe(function (staticImageUrl) {
-                _this9.pickedLocation.staticMapImageUrl = staticImageUrl;
-                _this9.selectedLocationImage = staticImageUrl;
-                _this9.isLoading = false;
+                _this14.pickedLocation.staticMapImageUrl = staticImageUrl;
+                _this14.selectedLocationImage = staticImageUrl;
+                _this14.isLoading = false;
 
-                _this9.locationPick.emit(_this9.pickedLocation);
+                _this14.locationPick.emit(_this14.pickedLocation);
               });
             });
           }
         }, {
           key: "openMap",
           value: function openMap() {
-            var _this10 = this;
+            var _this15 = this;
 
             this.modalCtrl.create({
               component: _map_modal_map_modal_component__WEBPACK_IMPORTED_MODULE_3__["MapModalComponent"]
@@ -1676,23 +1868,23 @@
                   return;
                 }
 
-                _this10.pickedLocation = {
+                _this15.pickedLocation = {
                   lat: modalData.data.lat,
                   lng: modalData.data.lng,
                   address: null,
                   staticMapImageUrl: null
                 };
-                _this10.isLoading = true;
+                _this15.isLoading = true;
 
-                _this10.mapModalService.getAddress(modalData.data).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["switchMap"])(function (address) {
-                  _this10.pickedLocation.address = address;
-                  return Object(rxjs__WEBPACK_IMPORTED_MODULE_6__["of"])(_this10.mapModalService.getStaticMapImageURL(_this10.pickedLocation.lat, _this10.pickedLocation.lng, 14));
+                _this15.mapModalService.getAddress(modalData.data).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["switchMap"])(function (address) {
+                  _this15.pickedLocation.address = address;
+                  return Object(rxjs__WEBPACK_IMPORTED_MODULE_6__["of"])(_this15.mapModalService.getStaticMapImageURL(_this15.pickedLocation.lat, _this15.pickedLocation.lng, 14));
                 })).subscribe(function (staticImageUrl) {
-                  _this10.pickedLocation.staticMapImageUrl = staticImageUrl;
-                  _this10.selectedLocationImage = staticImageUrl;
-                  _this10.isLoading = false;
+                  _this15.pickedLocation.staticMapImageUrl = staticImageUrl;
+                  _this15.selectedLocationImage = staticImageUrl;
+                  _this15.isLoading = false;
 
-                  _this10.locationPick.emit(_this10.pickedLocation);
+                  _this15.locationPick.emit(_this15.pickedLocation);
                 });
               });
               modalEl.present();
@@ -1910,7 +2102,7 @@
     /***/
     function _(module, exports, __webpack_require__) {
       module.exports = __webpack_require__(
-      /*! /Users/shirleyxia/Projects/newproject2/src/main.ts */
+      /*! /Users/shirleyxia/Projects/bookplaces2/src/main.ts */
       "./src/main.ts");
       /***/
     }

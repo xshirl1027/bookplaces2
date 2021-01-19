@@ -22,6 +22,7 @@ var functions = firebase.default.functions();
 
 export class AdminPage implements OnInit {
   users:UserResponseData[];
+  adminUsers: {};
   constructor(private authService: AuthService) { }
 
 
@@ -30,16 +31,27 @@ export class AdminPage implements OnInit {
     getUsers().then((res)=>{
       this.users = res.data;
     });
+    this.authService.adminUsers.subscribe((res)=>{
+      this.adminUsers=res;
+    })
   }
-
+  ionViewWillEnter(){
+    this.authService.fetchAdminUsers().subscribe((res)=>{
+      this.adminUsers=res;
+    });
+  }
   onDeleteUser(idToken) {
     this.authService.deleteUser(idToken).subscribe(()=>{
       this.users = this.users.filter(user=>user.uid ==idToken);
     })
   }
 
-  onEditUser(userId) {
+  makeAdmin(userId) {
+    this.authService.makeUserAdmin(userId).subscribe((res)=>console.log(res));
+  }
 
+  removeAdmin(userId) {
+    this.authService.deleteUserAdmin(userId, this.adminUsers[userId]).subscribe((res)=>console.log(res));
   }
 
 }

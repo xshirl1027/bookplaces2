@@ -486,8 +486,8 @@ module.exports = content.locals || {};
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/shirleyxia/Projects/newproject2/src/theme/variables.scss */"./src/theme/variables.scss");
-module.exports = __webpack_require__(/*! /Users/shirleyxia/Projects/newproject2/src/global.scss */"./src/global.scss");
+__webpack_require__(/*! /Users/shirleyxia/Projects/bookplaces2/src/theme/variables.scss */"./src/theme/variables.scss");
+module.exports = __webpack_require__(/*! /Users/shirleyxia/Projects/bookplaces2/src/global.scss */"./src/global.scss");
 
 
 /***/ })

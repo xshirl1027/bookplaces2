@@ -42,7 +42,7 @@ export class AuthPage implements OnInit {
       .then(loadingEl => {
         loadingEl.present();
         console.log(this.isLogin);
-        let authObs: Observable<AuthResponseData>;
+        let authObs: Observable<any>;
         if (this.isLogin) {
           authObs = this.authService.login(email, password);
           

@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, from } from 'rxjs';
-import { map, take, tap } from 'rxjs/operators';
+import { BehaviorSubject, from, Observable } from 'rxjs';
+import { map, switchMap, take, tap } from 'rxjs/operators';
 import { Plugins } from '@capacitor/core';
 
 import { environment } from '../../environments/environment';
 import { User } from './user.model';
+import { stringify } from '@angular/compiler/src/util';
 
 export interface AuthResponseData {
   kind: string;
@@ -29,14 +30,39 @@ export interface UserResponseData
 "providerData": []
 }
 
-
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private _user = new BehaviorSubject<User>(null);
+  private _adminUsers = new BehaviorSubject<{}>(null);
+  private _userIsAdmin = new BehaviorSubject<boolean>(false);
   private activeLogoutTimer: any;
-  
+
+  constructor(private http: HttpClient) {}
+
+  checkUserIsAdmin(): Observable<boolean>{
+    let tempAdminUsers:{};
+    return this.fetchAdminUsers().pipe(
+      switchMap((adminUsers)=>{
+        tempAdminUsers=adminUsers;
+        return this.userId;
+      }),
+      take(1),
+      map((userId)=>{
+        if(tempAdminUsers[userId]){
+          return true;
+        } else{
+          return false;
+        }
+      })
+    );
+  }
+
+  get userIsAdmin(): Observable<boolean>{
+    return this._userIsAdmin.asObservable();
+  }
+
   get userIsAuthenticated() {
     return this._user.asObservable().pipe(
       map(user => {
@@ -73,7 +99,17 @@ export class AuthService {
     );
   }
 
-  constructor(private http: HttpClient) {}
+  get adminUsers() {
+    return this._adminUsers.asObservable().pipe(
+      map(adminUsers => {
+        if (adminUsers) {
+          return adminUsers;
+        } else {
+          return null;
+        }
+      })
+    );
+  }
 
   autoLogin() {
     return from(Plugins.Storage.get({ key: 'authData' })).pipe(
@@ -150,12 +186,62 @@ export class AuthService {
   }
 
   login(email: string, password: string) {
+    let userId: string;
     return this.http.post<AuthResponseData>(
       `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${
         environment.firebaseAPIKey
       }`,
       { email, password, returnSecureToken: true }
-    ).pipe(tap(this.setUserData.bind(this)));
+    ).pipe(tap(this.setUserData.bind(this)), switchMap(user=>{
+      userId=user.localId;
+      return this.fetchAdminUsers();
+    }), tap((adminUsers)=>{
+      this._userIsAdmin.next(userId in adminUsers);
+    }));
+  }
+  makeUserAdmin(userId){
+    let name: string;
+    return this.http.post(
+      `${environment.firebaseUrl}/adminUsers.json`,
+      {
+        id: userId
+      }
+    ).pipe(switchMap((res)=>{
+      name = res['name'];
+      return this.adminUsers;
+    }), take(1), tap((adminUsers)=>{
+      adminUsers[userId]=name;
+      this._adminUsers.next(adminUsers);
+    }));
+  }
+
+  deleteUserAdmin(userId, docId){
+    return this.http.delete(
+        `${environment.firebaseUrl}/adminUsers/${docId}.json`
+      ).pipe(switchMap(res=>{return this.adminUsers}), take(1), 
+      map((adminUsers)=>{
+        delete adminUsers[userId];
+        this._adminUsers.next(adminUsers);
+      }));
+  }
+
+  fetchAdminUsers(){
+    return this.http.get(
+      `${environment.firebaseUrl}/adminUsers.json`
+    ).pipe(
+      map(resData => {
+        const adminUsers = {}
+        for (const key in resData) {
+          if (resData.hasOwnProperty(key)) {
+            adminUsers[resData[key]['id']]=key;
+          }
+        }
+        return adminUsers;
+      }
+      ),
+      tap(adminUsers => {
+        this._adminUsers.next(adminUsers);
+      }));
   }
 
   setUserData(resData: AuthResponseData) {
@@ -163,6 +249,7 @@ export class AuthService {
     const expirationDate = new Date(new Date().getTime() + (+resData.expiresIn * 1000));
     this._user.next(new User(resData.localId, resData.displayName, resData.email, resData.refreshToken, expirationDate, resData.idToken));
     this.StoreAuthData(resData.localId, resData.displayName, resData.refreshToken, expirationDate.toISOString(), resData.email, resData.idToken);
+    return resData.localId;
   }
 
   logout() {
@@ -170,6 +257,7 @@ export class AuthService {
       clearTimeout(this.activeLogoutTimer);
     }
     this._user.next(null);
+    this._adminUsers.next(null);
     Plugins.Storage.remove({ key: 'authData' });
   }
 
@@ -177,15 +265,6 @@ export class AuthService {
     if (this.activeLogoutTimer) {
       clearTimeout(this.activeLogoutTimer);
     }
-  }
-
-  private autoLogout(duration: number) {
-    if (this.activeLogoutTimer) {
-      clearTimeout(this.activeLogoutTimer);
-    }
-    this.activeLogoutTimer = setTimeout(() => {
-      this.logout();
-    }, duration);
   }
 
   private StoreAuthData(

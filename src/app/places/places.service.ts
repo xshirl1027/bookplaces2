@@ -68,16 +68,21 @@ export class PlacesService {
   }
 
   fetchOffers() {
+    let resData;
     return this.authService.user.pipe(switchMap(user=>{
       return this.http
         .get<{ [key: string]: PlaceData }>(
           `${environment.firebaseUrl}/places.json`
         )
         .pipe(
-          map(resData => {
+          switchMap(res=>{
+            resData=res;
+            return this.authService.checkUserIsAdmin();
+          }),
+          map(userIsAdmin => {
             const places = [];
             for (const key in resData) {
-              if (resData.hasOwnProperty(key) && (resData[key].userId==user.id || user.email == 'admin@admin.com')) {
+              if (resData.hasOwnProperty(key) && (resData[key].userId==user.id || userIsAdmin==true)) {
                 places.push(
                   new Place(
                     key,

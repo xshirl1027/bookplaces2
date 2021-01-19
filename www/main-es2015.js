@@ -270,7 +270,7 @@ module.exports = webpackAsyncContext;
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<ion-app>\n  <ion-menu side=\"start\">\n    <ion-header>\n      <ion-toolbar>\n        <ion-title>\n          CampBnB\n        </ion-title>\n      </ion-toolbar>\n    </ion-header>\n\n    <ion-content>\n      <ion-list>\n        <ion-menu-toggle>\n          <ion-item lines=\"none\" routerLink=\"/places/tabs/discover\">\n            <ion-icon name=\"business\" slot=\"start\"></ion-icon>\n            <ion-label>Discover Camps</ion-label>\n          </ion-item>\n        </ion-menu-toggle>\n        <ion-menu-toggle>\n          <ion-item lines=\"none\" routerLink=\"/bookings\">\n            <ion-icon name=\"checkbox-outline\" slot=\"start\"></ion-icon>\n            <ion-label>Your Bookings</ion-label>\n          </ion-item>\n        </ion-menu-toggle>\n        <ion-menu-toggle>\n          <ion-item lines=\"none\" routerLink=\"/account\">\n            <ion-icon name=\"settings-outline\" slot=\"start\"></ion-icon>\n            <ion-label>Your Account</ion-label>\n          </ion-item>\n        </ion-menu-toggle>\n        <ion-menu-toggle>\n          <ion-item lines=\"none\" (click)=\"onLogout()\" button>\n            <ion-icon name=\"exit\" slot=\"start\"></ion-icon>\n            <ion-label>Logout</ion-label>\n          </ion-item>\n        </ion-menu-toggle>\n      </ion-list>\n    </ion-content>\n  </ion-menu>\n  <ion-router-outlet main></ion-router-outlet>\n</ion-app>\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<ion-app>\n  <ion-menu side=\"start\">\n    <ion-header>\n      <ion-toolbar>\n        <ion-title>\n          CampBnB\n        </ion-title>\n      </ion-toolbar>\n    </ion-header>\n\n    <ion-content>\n      <ion-list>\n        <ion-menu-toggle>\n          <ion-item lines=\"none\" routerLink=\"/places/tabs/discover\">\n            <ion-icon name=\"business\" slot=\"start\"></ion-icon>\n            <ion-label>Discover Camps</ion-label>\n          </ion-item>\n        </ion-menu-toggle>\n        <ion-menu-toggle>\n          <ion-item lines=\"none\" routerLink=\"/bookings\">\n            <ion-icon name=\"checkbox-outline\" slot=\"start\"></ion-icon>\n            <ion-label>Your Bookings</ion-label>\n          </ion-item>\n        </ion-menu-toggle>\n        <ion-menu-toggle>\n          <ion-item lines=\"none\" routerLink=\"/account\">\n            <ion-icon name=\"settings-outline\" slot=\"start\"></ion-icon>\n            <ion-label>Your Account</ion-label>\n          </ion-item>\n        </ion-menu-toggle>\n        <ion-menu-toggle *ngIf=\"isAdmin\">\n          <ion-item lines=\"none\" routerLink=\"/admin\">\n            <ion-icon name=\"settings-outline\" slot=\"start\"></ion-icon>\n            <ion-label>Admin Panel</ion-label>\n          </ion-item>\n        </ion-menu-toggle>\n        <ion-menu-toggle>\n          <ion-item lines=\"none\" (click)=\"onLogout()\" button>\n            <ion-icon name=\"exit\" slot=\"start\"></ion-icon>\n            <ion-label>Logout</ion-label>\n          </ion-item>\n        </ion-menu-toggle>\n      </ion-list>\n    </ion-content>\n  </ion-menu>\n  <ion-router-outlet main></ion-router-outlet>\n</ion-app>\n");
 
 /***/ }),
 
@@ -326,7 +326,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/__ivy_ngcc__/fesm2015/core.js");
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js");
-/* harmony import */ var _auth_auth_guard__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./auth/auth.guard */ "./src/app/auth/auth.guard.ts");
+/* harmony import */ var _auth_admin_guard__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./auth/admin.guard */ "./src/app/auth/admin.guard.ts");
+/* harmony import */ var _auth_auth_guard__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./auth/auth.guard */ "./src/app/auth/auth.guard.ts");
+
 
 
 
@@ -337,18 +339,23 @@ const routes = [
     {
         path: 'places',
         loadChildren: () => __webpack_require__.e(/*! import() | places-places-module */ "places-places-module").then(__webpack_require__.bind(null, /*! ./places/places.module */ "./src/app/places/places.module.ts")).then(m => m.PlacesPageModule),
-        canLoad: [_auth_auth_guard__WEBPACK_IMPORTED_MODULE_3__["AuthGuard"]]
+        canLoad: [_auth_auth_guard__WEBPACK_IMPORTED_MODULE_4__["AuthGuard"]]
     },
     {
         path: 'bookings',
-        loadChildren: () => Promise.all(/*! import() | bookings-bookings-module */[__webpack_require__.e("common"), __webpack_require__.e("bookings-bookings-module")]).then(__webpack_require__.bind(null, /*! ./bookings/bookings.module */ "./src/app/bookings/bookings.module.ts")).then(m => m.BookingsPageModule),
-        canLoad: [_auth_auth_guard__WEBPACK_IMPORTED_MODULE_3__["AuthGuard"]]
+        loadChildren: () => Promise.all(/*! import() | bookings-bookings-module */[__webpack_require__.e("default~bookings-bookings-module~discover-place-detail-place-detail-module"), __webpack_require__.e("bookings-bookings-module")]).then(__webpack_require__.bind(null, /*! ./bookings/bookings.module */ "./src/app/bookings/bookings.module.ts")).then(m => m.BookingsPageModule),
+        canLoad: [_auth_auth_guard__WEBPACK_IMPORTED_MODULE_4__["AuthGuard"]]
     },
     {
         path: 'account',
-        loadChildren: () => __webpack_require__.e(/*! import() | account-account-module */ "account-account-module").then(__webpack_require__.bind(null, /*! ./account/account.module */ "./src/app/account/account.module.ts")).then(m => m.AccountPageModule)
+        loadChildren: () => __webpack_require__.e(/*! import() | account-account-module */ "account-account-module").then(__webpack_require__.bind(null, /*! ./account/account.module */ "./src/app/account/account.module.ts")).then(m => m.AccountPageModule),
+        canLoad: [_auth_auth_guard__WEBPACK_IMPORTED_MODULE_4__["AuthGuard"]]
     },
-    { path: '**', redirectTo: 'places', pathMatch: 'full' }
+    {
+        path: 'admin',
+        loadChildren: () => __webpack_require__.e(/*! import() | admin-admin-module */ "admin-admin-module").then(__webpack_require__.bind(null, /*! ./admin/admin.module */ "./src/app/admin/admin.module.ts")).then(m => m.AdminPageModule),
+        canLoad: [_auth_admin_guard__WEBPACK_IMPORTED_MODULE_3__["AdminGuard"]]
+    }
 ];
 let AppRoutingModule = class AppRoutingModule {
 };
@@ -391,6 +398,7 @@ let AppComponent = class AppComponent {
         this.authService = authService;
         this.router = router;
         this.previousAuthState = false;
+        this.isAdmin = false;
         this.initializeApp();
     }
     initializeApp() {
@@ -409,14 +417,24 @@ let AppComponent = class AppComponent {
             }
             this.previousAuthState = isAuth;
         });
+        this.adminSub = this.authService.userIsAdmin.subscribe(isAdmin => {
+            this.isAdmin = isAdmin;
+        });
+        this.authService.checkUserIsAdmin().subscribe(isAdmin => {
+            this.isAdmin = isAdmin;
+        });
     }
     onLogout() {
         this.authService.logout();
+        this.isAdmin = null;
         this.router.navigateByUrl('/auth');
     }
     ngOnDestroy() {
         if (this.authSub) {
             this.authSub.unsubscribe();
+        }
+        if (this.adminSub) {
+            this.adminSub.unsubscribe();
         }
     }
 };
@@ -483,6 +501,58 @@ AppModule = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
         bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_8__["AppComponent"]]
     })
 ], AppModule);
+
+
+
+/***/ }),
+
+/***/ "./src/app/auth/admin.guard.ts":
+/*!*************************************!*\
+  !*** ./src/app/auth/admin.guard.ts ***!
+  \*************************************/
+/*! exports provided: AdminGuard */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AdminGuard", function() { return AdminGuard; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/__ivy_ngcc__/fesm2015/core.js");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm2015/index.js");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm2015/operators/index.js");
+/* harmony import */ var _auth_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./auth.service */ "./src/app/auth/auth.service.ts");
+
+
+
+
+
+
+let AdminGuard = class AdminGuard {
+    constructor(authService, router) {
+        this.authService = authService;
+        this.router = router;
+    }
+    canLoad(route, segments) {
+        return this.authService.checkUserIsAdmin().pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["take"])(1), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["switchMap"])(isAdmin => {
+            if (!isAdmin) {
+                this.router.navigateByUrl('/places/tabs/discover');
+            }
+            else {
+                return Object(rxjs__WEBPACK_IMPORTED_MODULE_3__["of"])(isAdmin);
+            }
+        }));
+    }
+};
+AdminGuard.ctorParameters = () => [
+    { type: _auth_service__WEBPACK_IMPORTED_MODULE_5__["AuthService"] },
+    { type: _angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"] }
+];
+AdminGuard = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+    Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
+        providedIn: 'root'
+    })
+], AdminGuard);
 
 
 
@@ -574,6 +644,25 @@ let AuthService = class AuthService {
     constructor(http) {
         this.http = http;
         this._user = new rxjs__WEBPACK_IMPORTED_MODULE_3__["BehaviorSubject"](null);
+        this._adminUsers = new rxjs__WEBPACK_IMPORTED_MODULE_3__["BehaviorSubject"](null);
+        this._userIsAdmin = new rxjs__WEBPACK_IMPORTED_MODULE_3__["BehaviorSubject"](false);
+    }
+    checkUserIsAdmin() {
+        let tempAdminUsers;
+        return this.fetchAdminUsers().pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["switchMap"])((adminUsers) => {
+            tempAdminUsers = adminUsers;
+            return this.userId;
+        }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["take"])(1), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["map"])((userId) => {
+            if (tempAdminUsers[userId]) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }));
+    }
+    get userIsAdmin() {
+        return this._userIsAdmin.asObservable();
     }
     get userIsAuthenticated() {
         return this._user.asObservable().pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["map"])(user => {
@@ -599,6 +688,16 @@ let AuthService = class AuthService {
         return this._user.asObservable().pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["map"])(user => {
             if (user) {
                 return user;
+            }
+            else {
+                return null;
+            }
+        }));
+    }
+    get adminUsers() {
+        return this._adminUsers.asObservable().pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["map"])(adminUsers => {
+            if (adminUsers) {
+                return adminUsers;
             }
             else {
                 return null;
@@ -634,28 +733,62 @@ let AuthService = class AuthService {
         }
         return this.http.post(`https://identitytoolkit.googleapis.com/v1/accounts:update?key=${_environments_environment__WEBPACK_IMPORTED_MODULE_6__["environment"].firebaseAPIKey}`, { idToken: id, displayName: displayName, photoUrl: photoUrl, email: email, returnSecureToken: true }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(this.logout.bind(this)));
     }
+    deleteUser(id) {
+        return this.http.post(`https://identitytoolkit.googleapis.com/v1/accounts:update?key=${_environments_environment__WEBPACK_IMPORTED_MODULE_6__["environment"].firebaseAPIKey}`, { idToken: id });
+    }
     login(email, password) {
-        return this.http.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${_environments_environment__WEBPACK_IMPORTED_MODULE_6__["environment"].firebaseAPIKey}`, { email, password, returnSecureToken: true }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(this.setUserData.bind(this)));
+        let userId;
+        return this.http.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${_environments_environment__WEBPACK_IMPORTED_MODULE_6__["environment"].firebaseAPIKey}`, { email, password, returnSecureToken: true }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(this.setUserData.bind(this)), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["switchMap"])(user => {
+            userId = user.localId;
+            return this.fetchAdminUsers();
+        }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])((adminUsers) => {
+            this._userIsAdmin.next(userId in adminUsers);
+        }));
+    }
+    makeUserAdmin(userId) {
+        let name;
+        return this.http.post(`${_environments_environment__WEBPACK_IMPORTED_MODULE_6__["environment"].firebaseUrl}/adminUsers.json`, {
+            id: userId
+        }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["switchMap"])((res) => {
+            name = res['name'];
+            return this.adminUsers;
+        }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["take"])(1), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])((adminUsers) => {
+            adminUsers[userId] = name;
+            this._adminUsers.next(adminUsers);
+        }));
+    }
+    deleteUserAdmin(userId, docId) {
+        return this.http.delete(`${_environments_environment__WEBPACK_IMPORTED_MODULE_6__["environment"].firebaseUrl}/adminUsers/${docId}.json`).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["switchMap"])(res => { return this.adminUsers; }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["take"])(1), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["map"])((adminUsers) => {
+            delete adminUsers[userId];
+            this._adminUsers.next(adminUsers);
+        }));
+    }
+    fetchAdminUsers() {
+        return this.http.get(`${_environments_environment__WEBPACK_IMPORTED_MODULE_6__["environment"].firebaseUrl}/adminUsers.json`).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["map"])(resData => {
+            const adminUsers = {};
+            for (const key in resData) {
+                if (resData.hasOwnProperty(key)) {
+                    adminUsers[resData[key]['id']] = key;
+                }
+            }
+            return adminUsers;
+        }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(adminUsers => {
+            this._adminUsers.next(adminUsers);
+        }));
     }
     setUserData(resData) {
         console.log(resData);
         const expirationDate = new Date(new Date().getTime() + (+resData.expiresIn * 1000));
         this._user.next(new _user_model__WEBPACK_IMPORTED_MODULE_7__["User"](resData.localId, resData.displayName, resData.email, resData.refreshToken, expirationDate, resData.idToken));
         this.StoreAuthData(resData.localId, resData.displayName, resData.refreshToken, expirationDate.toISOString(), resData.email, resData.idToken);
+        return resData.localId;
     }
-    // updateUserData(resData: AuthResponseData) {
-    //   console.log(resData);
-    //   this._user.pipe(take(1),map((user)=>{
-    //     //const expirationDate = new Date(new Date().getTime() + (+resData.expiresIn * 1000));
-    //     this._user.next(new User(user.id, resData.displayName, resData.email, user.token, user.tokenExpirationDate, resData.idToken));
-    //     this.StoreAuthData(resData.localId, resData.displayName, resData.refreshToken, user.tokenExpirationDate.toISOString(), resData.email, resData.idToken);
-    //   }));
-    //    }
     logout() {
         if (this.activeLogoutTimer) {
             clearTimeout(this.activeLogoutTimer);
         }
         this._user.next(null);
+        this._adminUsers.next(null);
         _capacitor_core__WEBPACK_IMPORTED_MODULE_5__["Plugins"].Storage.remove({ key: 'authData' });
     }
     ngOnDestroy() {
@@ -663,20 +796,8 @@ let AuthService = class AuthService {
             clearTimeout(this.activeLogoutTimer);
         }
     }
-    autoLogout(duration) {
-        if (this.activeLogoutTimer) {
-            clearTimeout(this.activeLogoutTimer);
-        }
-        this.activeLogoutTimer = setTimeout(() => {
-            this.logout();
-        }, duration);
-    }
     StoreAuthData(userId, displayName, token, tokenExpirationDate, email, idToken) {
         const data = JSON.stringify({ userId, displayName, token, tokenExpirationDate, email, idToken });
-        _capacitor_core__WEBPACK_IMPORTED_MODULE_5__["Plugins"].Storage.set({ key: 'authData', value: data });
-    }
-    UpdateUserData(displayName) {
-        const data = JSON.stringify(_capacitor_core__WEBPACK_IMPORTED_MODULE_5__["Plugins"].Storage.get({ key: 'authData' }));
         _capacitor_core__WEBPACK_IMPORTED_MODULE_5__["Plugins"].Storage.set({ key: 'authData', value: data });
     }
 };
@@ -1303,7 +1424,7 @@ Object(_angular_platform_browser_dynamic__WEBPACK_IMPORTED_MODULE_1__["platformB
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/shirleyxia/Projects/newproject2/src/main.ts */"./src/main.ts");
+module.exports = __webpack_require__(/*! /Users/shirleyxia/Projects/bookplaces2/src/main.ts */"./src/main.ts");
 
 
 /***/ })

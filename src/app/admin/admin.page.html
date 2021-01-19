@@ -21,33 +21,19 @@
         *ngIf="users && users.length > 0"
       >
         <ion-list>
-          <ion-item-sliding
+          <ion-item
             *ngFor="let user of users"
             #slidingUser
           >
-            <ion-item>
               <ion-avatar slot="start">
                   <ion-img src="https://lonelyplanetimages.imgix.net/mastheads/GettyImages-538096543_medium.jpg?sharp=10&vib=20&w=1200"></ion-img>
               </ion-avatar>
               <ion-label>
                 <h5>{{ user.displayName }}</h5>        
               </ion-label>
+                <ion-button (click)='makeAdmin(user.uid)' *ngIf='!adminUsers[user.uid]'>Make Admin</ion-button>
+                <ion-button (click)='removeAdmin(user.uid)' *ngIf='adminUsers[user.uid]'>Remove Admin</ion-button>
             </ion-item>
-            <ion-item-options>
-              <ion-item-option
-                color="danger"
-                (click)="onDeleteUser(user.uid)"
-              >
-                <ion-icon name="trash" slot="icon-only"></ion-icon>
-              </ion-item-option>
-              <ion-item-option
-              color="secondary"
-              (click)="onEditUser(user.uid)"
-            >
-              <ion-icon name="create" slot="icon-only"></ion-icon>
-            </ion-item-option>
-            </ion-item-options>
-          </ion-item-sliding>
         </ion-list>
       </ion-col>
     </ion-row>

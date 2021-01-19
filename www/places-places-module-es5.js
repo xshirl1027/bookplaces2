@@ -78,9 +78,9 @@
           children: [{
             path: '',
             loadChildren: function loadChildren() {
-              return Promise.all(
+              return __webpack_require__.e(
               /*! import() | discover-discover-module */
-              [__webpack_require__.e("common"), __webpack_require__.e("discover-discover-module")]).then(__webpack_require__.bind(null,
+              "discover-discover-module").then(__webpack_require__.bind(null,
               /*! ./discover/discover.module */
               "./src/app/places/discover/discover.module.ts")).then(function (m) {
                 return m.DiscoverPageModule;
@@ -91,7 +91,7 @@
             loadChildren: function loadChildren() {
               return Promise.all(
               /*! import() | discover-place-detail-place-detail-module */
-              [__webpack_require__.e("common"), __webpack_require__.e("discover-place-detail-place-detail-module")]).then(__webpack_require__.bind(null,
+              [__webpack_require__.e("default~bookings-bookings-module~discover-place-detail-place-detail-module"), __webpack_require__.e("discover-place-detail-place-detail-module")]).then(__webpack_require__.bind(null,
               /*! ./discover/place-detail/place-detail.module */
               "./src/app/places/discover/place-detail/place-detail.module.ts")).then(function (m) {
                 return m.PlaceDetailPageModule;
@@ -103,9 +103,9 @@
           children: [{
             path: '',
             loadChildren: function loadChildren() {
-              return Promise.all(
+              return __webpack_require__.e(
               /*! import() | offers-offers-module */
-              [__webpack_require__.e("common"), __webpack_require__.e("offers-offers-module")]).then(__webpack_require__.bind(null,
+              "offers-offers-module").then(__webpack_require__.bind(null,
               /*! ./offers/offers.module */
               "./src/app/places/offers/offers.module.ts")).then(function (m) {
                 return m.OffersPageModule;
@@ -114,9 +114,9 @@
           }, {
             path: 'new',
             loadChildren: function loadChildren() {
-              return Promise.all(
+              return __webpack_require__.e(
               /*! import() | offers-new-offer-new-offer-module */
-              [__webpack_require__.e("common"), __webpack_require__.e("offers-new-offer-new-offer-module")]).then(__webpack_require__.bind(null,
+              "offers-new-offer-new-offer-module").then(__webpack_require__.bind(null,
               /*! ./offers/new-offer/new-offer.module */
               "./src/app/places/offers/new-offer/new-offer.module.ts")).then(function (m) {
                 return m.NewOfferPageModule;
@@ -125,9 +125,9 @@
           }, {
             path: 'edit/:placeId',
             loadChildren: function loadChildren() {
-              return Promise.all(
+              return __webpack_require__.e(
               /*! import() | offers-edit-offer-edit-offer-module */
-              [__webpack_require__.e("common"), __webpack_require__.e("offers-edit-offer-edit-offer-module")]).then(__webpack_require__.bind(null,
+              "offers-edit-offer-edit-offer-module").then(__webpack_require__.bind(null,
               /*! ./offers/edit-offer/edit-offer.module */
               "./src/app/places/offers/edit-offer/edit-offer.module.ts")).then(function (m) {
                 return m.EditOfferPageModule;

@@ -116,7 +116,6 @@ export class EditOfferPage implements OnInit, OnDestroy, AfterViewInit {
       })
       .then(loadingEl => {
         loadingEl.present();
-        console.log('form ' + this.form);
         this.place.title = this.form.value.title;
         this.place.availableFrom = new Date(this.form.value.dateFrom);
         this.place.availableTo = new Date(this.form.value.dateTo);
@@ -144,7 +143,6 @@ export class EditOfferPage implements OnInit, OnDestroy, AfterViewInit {
     this.form.patchValue({ image: imageData });
   }
   datesValid() {
-    console.log('here');
     const startDate = new Date(this.form.value['dateFrom']);
     const endDate = new Date(this.form.value['dateTo']);
     return endDate > startDate;

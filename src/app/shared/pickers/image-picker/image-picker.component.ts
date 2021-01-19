@@ -22,7 +22,6 @@ export class ImagePickerComponent implements OnInit {
   ngOnInit() {
     if (this.platform.is("mobile") || this.platform.is("hybrid") || this.platform.is("desktop") ) {
       this.usePicker = true;
-      console.log(this.selectedImage);
     }
   }
 

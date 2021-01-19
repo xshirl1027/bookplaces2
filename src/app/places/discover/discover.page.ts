@@ -35,7 +35,6 @@ export class DiscoverPage implements OnInit, OnDestroy {
       if(user){
         this.displayName=user.displayName;
         this.email=user.email;
-        console.log(user);
         this.placesSub = this.placesService.places.subscribe(places => {
           this.loadedPlaces = places;
           if (this.filter === 'all') {
@@ -47,7 +46,6 @@ export class DiscoverPage implements OnInit, OnDestroy {
             );
             this.listedLoadedPlaces = this.relevantPlaces.slice(1);
           }
-          console.log(this.listedLoadedPlaces);
         });
       }
     });

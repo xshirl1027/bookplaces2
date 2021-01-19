@@ -41,7 +41,6 @@ export class AuthPage implements OnInit {
       .create({ keyboardClose: true, message: 'Logging in...' })
       .then(loadingEl => {
         loadingEl.present();
-        console.log(this.isLogin);
         let authObs: Observable<any>;
         if (this.isLogin) {
           authObs = this.authService.login(email, password);
@@ -65,7 +64,6 @@ export class AuthPage implements OnInit {
           loadingEl.dismiss();
           const code = error.error.error.message;
           let message = 'could not sign up, please try again';
-          console.log(code);
           if (code === 'EMAIL_EXISTS') {
             message = 'this email already exists';
           }

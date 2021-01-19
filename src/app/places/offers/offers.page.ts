@@ -51,7 +51,6 @@ export class OffersPage implements OnInit, OnDestroy {
       role: 'cancel',
       handler: () => {
         slidingItem.close();
-        console.log('Cancel clicked');
       }
     },
     {

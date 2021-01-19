@@ -42,8 +42,6 @@ export class BookingService {
     let generatedId: string;
     let newBooking;
     return this.authService.user.pipe(take(1), switchMap(user => {
-      console.log(dateFrom);
-      console.log(dateTo);
       newBooking = new Booking(
         Math.random().toString(),
         placeId,
@@ -56,7 +54,6 @@ export class BookingService {
         dateFrom,
         dateTo
       );
-      console.log(newBooking);
       return this.http
         .post<{ name: string }>(
           `${environment.firebaseUrl}/bookings.json`,
@@ -89,8 +86,6 @@ export class BookingService {
     let generatedId: string;
     let newBooking;
     return this.authService.user.pipe(take(1), switchMap(user => {
-      console.log(dateFrom);
-      console.log(dateTo);
       newBooking = new Booking(
         id,
         placeId,
@@ -103,7 +98,6 @@ export class BookingService {
         dateFrom,
         dateTo
       );
-      console.log(newBooking);
       return this.http
         .put<{ name: string }>(
           `${environment.firebaseUrl}/bookings/${id}.json`,

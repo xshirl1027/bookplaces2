@@ -245,7 +245,6 @@ export class AuthService {
   }
 
   setUserData(resData: AuthResponseData) {
-    console.log(resData);
     const expirationDate = new Date(new Date().getTime() + (+resData.expiresIn * 1000));
     this._user.next(new User(resData.localId, resData.displayName, resData.email, resData.refreshToken, expirationDate, resData.idToken));
     this.StoreAuthData(resData.localId, resData.displayName, resData.refreshToken, expirationDate.toISOString(), resData.email, resData.idToken);

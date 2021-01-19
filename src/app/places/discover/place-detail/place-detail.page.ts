@@ -112,7 +112,6 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
   }
 
   openBookingModal(mode: 'select' | 'random') {
-    console.log(mode);
     this.modalCtrl
       .create({
         component: CreateBookingComponent,
@@ -129,7 +128,6 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
             .then(loadingEl => {
               loadingEl.present();
               const data = resultData.data.bookingData;
-              console.log(data);
               this.bookingService
                 .addBooking(
                   this.place.id,

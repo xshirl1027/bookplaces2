@@ -29,7 +29,6 @@ export class BookingsPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.bookingSub = this.bookingService.bookings.subscribe(bookings => {
       this.loadedBookings = bookings;
-      console.log(bookings);
     });
   }
 
@@ -40,7 +39,6 @@ export class BookingsPage implements OnInit, OnDestroy {
     });
   }
   onEdit(booking: Booking, slidingEl: IonItemSliding) {
-    console.log(booking);
     this.placesService.getPlace(booking.placeId).subscribe((place:Place)=>{
       this.modalCtrl
       .create({
@@ -58,7 +56,6 @@ export class BookingsPage implements OnInit, OnDestroy {
             .then(loadingEl => {
               loadingEl.present();
               const data = resultData.data.bookingData;
-              console.log(data);
               this.bookingService
                 .updateBooking(
                   booking.id,
@@ -86,7 +83,6 @@ export class BookingsPage implements OnInit, OnDestroy {
       role: 'cancel',
       handler: () => {
         slidingEl.close();
-        console.log('Cancel clicked');
       }
     },
     {

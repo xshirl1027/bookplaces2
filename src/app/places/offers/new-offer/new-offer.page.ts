@@ -107,16 +107,13 @@ export class NewOfferPage implements OnInit {
   }
   
   onImagePicked(imageData: string) {
-    console.log(imageData);
     this.form.patchValue({ image:imageData });
   }
 
   onLocationPicked(location: PlaceLocation) {
-    console.log("valid location");
     this.form.patchValue({ location });
   }
   datesValid() {
-    console.log('here');
     const startDate = new Date(this.form.value['dateFrom']);
     const endDate = new Date(this.form.value['dateTo']);
     return endDate > startDate;

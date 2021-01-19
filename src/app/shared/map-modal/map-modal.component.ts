@@ -28,12 +28,10 @@ export class MapModalComponent implements OnInit, AfterViewInit, OnDestroy {
     this.mapModalService.getGoogleGeoLocation().subscribe(resData => {
         if (!this.center) {
           if (!resData && !resData['location']) {
-            console.error('Cannot get current location');
             return;
           }
           this.center = resData['location'];
         }
-        console.log(resData);
         this.getGoogleMaps().then(googleMaps => {
           const mapEl = this.mapElementRef.nativeElement;
           const map = new googleMaps.Map(mapEl, {
@@ -58,7 +56,6 @@ export class MapModalComponent implements OnInit, AfterViewInit, OnDestroy {
           marker.setMap(map);
         })
       .catch(err => {
-        console.log(err);
       });
     });
   }

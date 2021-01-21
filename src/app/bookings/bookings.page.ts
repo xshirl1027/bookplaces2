@@ -38,7 +38,7 @@ export class BookingsPage implements OnInit, OnDestroy {
       this.isLoading = false;
     });
   }
-  onEdit(booking: Booking, slidingEl: IonItemSliding) {
+  onEdit(booking: Booking) {
     this.placesService.getPlace(booking.placeId).subscribe((place:Place)=>{
       this.modalCtrl
       .create({
@@ -75,8 +75,8 @@ export class BookingsPage implements OnInit, OnDestroy {
         }
       });
     });
-    
   }
+  
   onCancelBooking(bookingId: string, slidingEl: IonItemSliding) {
     this.alertCtrl.create({header: "Delete", message: "Are you sure you want to delete booking?", buttons: [{
       text: 'Cancel',

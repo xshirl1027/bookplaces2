@@ -28,7 +28,7 @@
             <ion-label>Your Account</ion-label>
           </ion-item>
         </ion-menu-toggle>
-        <ion-menu-toggle *ngIf="isAdmin">
+        <ion-menu-toggle *ngIf="user && user.isAdmin">
           <ion-item lines="none" routerLink="/admin">
             <ion-icon name="settings-outline" slot="start"></ion-icon>
             <ion-label>Admin Panel</ion-label>

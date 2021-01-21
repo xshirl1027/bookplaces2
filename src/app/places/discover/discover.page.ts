@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MenuController } from '@ionic/angular';
+import { Component, OnInit, OnDestroy, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { IonList, MenuController } from '@ionic/angular';
 import { SegmentChangeEventDetail } from '@ionic/core';
 import { Subscription } from 'rxjs';
 
@@ -13,7 +13,7 @@ import { take, map } from 'rxjs/operators';
   templateUrl: './discover.page.html',
   styleUrls: ['./discover.page.scss']
 })
-export class DiscoverPage implements OnInit, OnDestroy {
+export class DiscoverPage implements OnInit, AfterViewInit, OnDestroy {
   loadedPlaces: Place[];
   listedLoadedPlaces: Place[];
   relevantPlaces: Place[];
@@ -21,7 +21,7 @@ export class DiscoverPage implements OnInit, OnDestroy {
   filter: string = 'all';
   displayName: string;
   email: string;
-  items = Array.from(document.querySelector('ion-list').children);
+  @ViewChild('slidingItems', {static: false}) items: ElementRef;
   private placesSub: Subscription;
   private userSub: Subscription;
   constructor(
@@ -49,15 +49,21 @@ export class DiscoverPage implements OnInit, OnDestroy {
         });
       }
     });
-
   }
+
+
+
+  ngAfterViewInit(){
+    console.log(this.items);
+  }
+
    handleInput(event) {
     const query = event.target.value.toLowerCase();
     requestAnimationFrame(() => {
-      this.items.forEach(item => {
-        const shouldShow = item.textContent.toLowerCase().indexOf(query) > -1;
-        item['style'].display = shouldShow ? 'block' : 'none';
-      });
+      // this.items.forEach(item => {
+      //   const shouldShow = item.textContent.toLowerCase().indexOf(query) > -1;
+      //   item['style'].display = shouldShow ? 'block' : 'none';
+      // });
     });
   }
   ionViewWillEnter() {

@@ -1,17 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, of, Observable, observable } from 'rxjs';
-import { take, map, tap, delay, switchMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { PlaceLocation, Coordinates } from '../../places/location.model';
-import { Capacitor, Plugins } from '@capacitor/core';
+import { PlaceLocation } from '../../places/location.model';
 import { AlertController } from '@ionic/angular';
 
 @Injectable({
     providedIn: 'root'
   })
 export class MapModalService {
-    constructor(private http: HttpClient, private alertCtrl: AlertController){}
+    constructor(private http: HttpClient){}
     
     geoLocationReqBody = {
         "considerIp": "true",

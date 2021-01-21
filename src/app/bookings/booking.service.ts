@@ -134,22 +134,17 @@ export class BookingService {
   }
 
   fetchBookings() {
-    let bookingData;
     return this.authService.user.pipe(switchMap(user=>{
       return this.http
       .get<{ [key: string]: BookingData }>(
         `${environment.firebaseUrl}/bookings.json`
       )
       .pipe(
-        switchMap(res=>{
-          bookingData=res;
-          return this.authService.checkUserIsAdmin();
-        }),
-        map(userIsAdmin => {
+        map(bookingData => {
           const bookings = [];
           for (const key in bookingData) {
             if (bookingData.hasOwnProperty(key)) {
-              if(bookingData[key].userEmail == user.email || userIsAdmin == true){
+              if(bookingData[key].userEmail == user.email || user.isAdmin == true){
                 bookings.push(
                   new Booking(
                     key,

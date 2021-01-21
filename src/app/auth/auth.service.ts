@@ -3,10 +3,19 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, from, Observable } from 'rxjs';
 import { map, switchMap, take, tap } from 'rxjs/operators';
 import { Plugins } from '@capacitor/core';
-
 import { environment } from '../../environments/environment';
 import { User } from './user.model';
-import { stringify } from '@angular/compiler/src/util';
+import * as firebase from 'firebase';
+
+firebase.default.initializeApp({
+  apiKey: "AIzaSyDMqXL534Jdd0JTcpdJRQNr1gFpjpR_pes",
+  authDomain: "teak-mantis-271722.firebaseapp.com",
+  projectId: "teak-mantis-271722",
+  databaseURL: "https://teak-mantis-271722.firebaseio.com"
+});
+
+// Initialize Cloud Functions through Firebase
+var functions = firebase.default.functions();
 
 export interface AuthResponseData {
   kind: string;
@@ -17,6 +26,7 @@ export interface AuthResponseData {
   registered: string;
   refreshToken: string;
   expiresIn: string;
+  isAdmin: boolean;
 }
 
 export interface UserResponseData 
@@ -38,29 +48,11 @@ export class AuthService {
   private _adminUsers = new BehaviorSubject<{}>(null);
   private _userIsAdmin = new BehaviorSubject<boolean>(false);
   private activeLogoutTimer: any;
-
+  
   constructor(private http: HttpClient) {}
 
-  checkUserIsAdmin(): Observable<boolean>{
-    let tempAdminUsers:{};
-    return this.fetchAdminUsers().pipe(
-      switchMap((adminUsers)=>{
-        tempAdminUsers=adminUsers;
-        return this.userId;
-      }),
-      take(1),
-      map((userId)=>{
-        if(tempAdminUsers[userId]){
-          return true;
-        } else{
-          return false;
-        }
-      })
-    );
-  }
-
-  get userIsAdmin(): Observable<boolean>{
-    return this._userIsAdmin.asObservable();
+  get users(){
+    return functions.httpsCallable('getAllUsers');
   }
 
   get userIsAuthenticated() {
@@ -111,7 +103,7 @@ export class AuthService {
     );
   }
 
-  autoLogin() {
+  autoLogin(path: string) {
     return from(Plugins.Storage.get({ key: 'authData' })).pipe(
       map(storedData => {
         if (!storedData || !storedData.value) {
@@ -124,6 +116,7 @@ export class AuthService {
           displayName:string;
           email: string;
           idToken: string;
+          isAdmin: boolean;
         };
         const expirationTime = new Date(parsedData.tokenExpirationDate);
         if (expirationTime <= new Date()) {
@@ -135,7 +128,8 @@ export class AuthService {
           parsedData.email,
           parsedData.token,
           expirationTime,
-          parsedData.idToken
+          parsedData.idToken,
+          parsedData.isAdmin
         );
         return user;
       }),
@@ -145,6 +139,9 @@ export class AuthService {
         }
       }),
       map(user => {
+        if(user != null && !user.isAdmin && path === 'admin'){
+          return false;
+        }
         return !!user;
       })
     );
@@ -156,7 +153,7 @@ export class AuthService {
         environment.firebaseAPIKey
       }`,
       {email, password, displayName, returnSecureToken: true }
-    ).pipe(tap(this.setUserData.bind(this)));
+    );
   }
 
   updateUser(id: string, displayName: string, email, password, photoUrl: string) {
@@ -186,17 +183,18 @@ export class AuthService {
   }
 
   login(email: string, password: string) {
-    let userId: string;
+    let res: AuthResponseData;
     return this.http.post<AuthResponseData>(
       `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${
         environment.firebaseAPIKey
       }`,
       { email, password, returnSecureToken: true }
-    ).pipe(tap(this.setUserData.bind(this)), switchMap(user=>{
-      userId=user.localId;
+    ).pipe(switchMap(resData=>{
+      res = resData;
       return this.fetchAdminUsers();
     }), tap((adminUsers)=>{
-      this._userIsAdmin.next(userId in adminUsers);
+      res['isAdmin'] = res.localId in adminUsers
+      this.setUserData(res);
     }));
   }
   makeUserAdmin(userId){
@@ -246,8 +244,8 @@ export class AuthService {
 
   setUserData(resData: AuthResponseData) {
     const expirationDate = new Date(new Date().getTime() + (+resData.expiresIn * 1000));
-    this._user.next(new User(resData.localId, resData.displayName, resData.email, resData.refreshToken, expirationDate, resData.idToken));
-    this.StoreAuthData(resData.localId, resData.displayName, resData.refreshToken, expirationDate.toISOString(), resData.email, resData.idToken);
+    this._user.next(new User(resData.localId, resData.displayName, resData.email, resData.refreshToken, expirationDate, resData.idToken, resData.isAdmin));
+    this.StoreAuthData(resData.localId, resData.displayName, resData.refreshToken, expirationDate.toISOString(), resData.email, resData.idToken, resData.isAdmin);
     return resData.localId;
   }
 
@@ -272,8 +270,9 @@ export class AuthService {
     token: string,
     tokenExpirationDate: string,
     email: string,
-    idToken: string) {
-      const data = JSON.stringify({userId, displayName, token, tokenExpirationDate, email, idToken});
+    idToken: string,
+    isAdmin: boolean) {
+      const data = JSON.stringify({userId, displayName, token, tokenExpirationDate, email, idToken, isAdmin});
       Plugins.Storage.set({key: 'authData', value: data});
     }
 }

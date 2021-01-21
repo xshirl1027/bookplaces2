@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 
 import { AuthService } from './auth/auth.service';
 import { map, switchMap, take, tap } from 'rxjs/operators';
+import { User } from './auth/user.model';
 
 @Component({
   selector: 'app-root',
@@ -15,8 +16,8 @@ import { map, switchMap, take, tap } from 'rxjs/operators';
 export class AppComponent implements OnInit, OnDestroy {
   private authSub: Subscription;
   private previousAuthState = false;
-  private isAdmin:boolean = false;
   private adminSub: Subscription;
+  private user: User;
   constructor(
     private platform: Platform,
     private authService: AuthService,
@@ -40,17 +41,13 @@ export class AppComponent implements OnInit, OnDestroy {
       }
       this.previousAuthState = isAuth;
     });
-    this.adminSub = this.authService.userIsAdmin.subscribe(isAdmin=>{
-      this.isAdmin=isAdmin;
-    });
-    this.authService.checkUserIsAdmin().subscribe(isAdmin=>{
-      this.isAdmin=isAdmin;
+    this.adminSub = this.authService.user.subscribe(user=>{
+      this.user=user;
     });
   }
 
   onLogout() {
     this.authService.logout();
-    this.isAdmin = null;
     this.router.navigateByUrl('/auth');
   }
 

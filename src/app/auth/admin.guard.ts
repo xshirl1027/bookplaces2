@@ -15,12 +15,13 @@ export class AdminGuard implements CanLoad {
     route: Route,
     segments: UrlSegment[]
   ): Observable<boolean> | Promise<boolean> | boolean {
-    return this.authService.checkUserIsAdmin().pipe(take(1),
-      switchMap(isAdmin => {
-        if (!isAdmin) {
+    console.log(route);
+    return this.authService.user.pipe(take(1),
+      switchMap(user => {
+        if (!user || !user.isAdmin) {
           this.router.navigateByUrl('/places/tabs/discover');
         }else{
-          return of(isAdmin);
+          return of(user.isAdmin);
         }
       })
     );

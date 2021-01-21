@@ -3,8 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   NavController,
   LoadingController,
-  AlertController,
-  IonDatetime
+  AlertController
 } from '@ionic/angular';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription, of } from 'rxjs';

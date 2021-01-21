@@ -10,7 +10,7 @@
 </ion-header>
 
 <ion-content class="ion-text-center" padding>
-  <form (ngSubmit)="onBookPlace()" #f="ngForm">
+  <form [formGroup]="form" (ngSubmit)="onBookPlace()">
     <ion-grid>
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
@@ -20,6 +20,7 @@
               type="text"
               [ngModel]='selectedBooking.firstName'
               name="first-name"
+              formControlName="firstName"
               required
             ></ion-input>
           </ion-item>
@@ -31,6 +32,7 @@
             <ion-label position="floating">Last Name</ion-label>
             <ion-input
               type="text"
+              formControlName="lastName"
               [ngModel]='selectedBooking.lastName'
               name="last-name"
               required
@@ -42,11 +44,17 @@
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
             <ion-label position="floating">Number of Guests</ion-label>
-            <ion-select [ngModel]="selectedBooking.guestNumber" name="guest-number">
+            <!-- <ion-select [value]="selectedBooking.guestNumber" name="guest-number">
               <ion-select-option value="1">1</ion-select-option>
               <ion-select-option value="2">2</ion-select-option>
               <ion-select-option value="3">3</ion-select-option>
-            </ion-select>
+            </ion-select> -->
+            <ion-input 
+            [value]="selectedBooking.guestNumber" 
+            [ngModel]="selectedBooking.guestNumber" 
+            name="guest-number" 
+            formControlName="guestNumber">
+          </ion-input> 
           </ion-item>
         </ion-col>
       </ion-row>
@@ -59,10 +67,9 @@
               picker-format="YY MMM DD"
               [min]="selectedPlace.availableFrom.toISOString()"
               [max]="selectedPlace.availableTo.toISOString()"
-              [ngModel]="selectedBooking.bookedFrom.toISOString()"
               name="date-from"
               required
-              #startDateCtrl="ngModel"
+              formControlName="dateFrom"
             ></ion-datetime>
           </ion-item>
         </ion-col>
@@ -72,11 +79,11 @@
             <ion-datetime
               display-format="MMM DD YYYY"
               picker-format="YY MMM DD"
-              [min]="startDateCtrl.value"
+              [min]="selectedPlace.availableFrom.toISOString()"
               [max]="selectedPlace.availableTo.toISOString()"
-              [ngModel]="selectedBooking.bookedTo.toISOString()"
               name="date-to"
               required
+              formControlName="dateTo"
             ></ion-datetime>
           </ion-item>
         </ion-col>
@@ -87,7 +94,7 @@
             type="submit"
             color="primary"
             expand="block"
-            [disabled]="!f.valid || !datesValid()"
+            [disabled]="!form.valid || !datesValid()"
           >
             Save!
           </ion-button>

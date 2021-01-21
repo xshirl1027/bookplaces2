@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { NgForm } from '@angular/forms';
+import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 
 import { Place } from '../../places/place.model';
 import { Booking } from '../booking.model';
@@ -12,12 +12,32 @@ import { Booking } from '../booking.model';
 export class EditBookingComponent implements OnInit {
   @Input() selectedPlace: Place;
   @Input() selectedBooking: Booking;
-  @ViewChild('f', { static: false }) form: NgForm;
+  form: FormGroup;
   constructor(private modalCtrl: ModalController) {}
 
   ngOnInit() {
-    const availableFrom = new Date(this.selectedPlace.availableFrom);
-    const availableTo = new Date(this.selectedPlace.availableTo);
+    this.form = new FormGroup({
+      firstName: new FormControl(this.selectedBooking.firstName, {
+        updateOn: 'blur',
+        validators: [Validators.required, Validators.maxLength(50)]
+      }),      
+      lastName: new FormControl(this.selectedBooking.lastName, {
+        updateOn: 'blur',
+        validators: [Validators.required, Validators.maxLength(50)]
+      }),
+      dateFrom: new FormControl(this.selectedBooking.bookedFrom.toISOString(), {
+        updateOn: 'blur',
+        validators: [Validators.required]
+      }),
+      dateTo: new FormControl(this.selectedBooking.bookedTo.toISOString(), {
+        updateOn: 'blur',
+        validators: [Validators.required]
+      }),
+      guestNumber: new FormControl(this.selectedBooking.guestNumber, {
+        updateOn: 'blur',
+        validators: [Validators.required, Validators.min(1), Validators.max(500)]
+      })
+    });
   }
 
   onCancel() {
@@ -32,11 +52,11 @@ export class EditBookingComponent implements OnInit {
     this.modalCtrl.dismiss(
       {
         bookingData: {
-          firstName: this.form.value['first-name'],
-          lastName: this.form.value['last-name'],
-          guestNumber: this.form.value['guest-number'],
-          startDate: new Date(this.form.value['date-from']),
-          endDate: new Date(this.form.value['date-to'])
+          firstName: this.form.value['firstName'],
+          lastName: this.form.value['lastName'],
+          guestNumber: this.form.value['guestNumber'],
+          startDate: new Date(this.form.value['dateFrom']),
+          endDate: new Date(this.form.value['dateTo'])
         }
       },
       'confirm'
@@ -47,8 +67,9 @@ export class EditBookingComponent implements OnInit {
     if (!this.form) {
       return false;
     }
-    const startDate = new Date(this.form.value['date-from']);
-    const endDate = new Date(this.form.value['date-to']);
+    const startDate = new Date(this.form.value['dateFrom']);
+    const endDate = new Date(this.form.value['dateTo']);
     return endDate > startDate;
   }
+  
 }

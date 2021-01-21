@@ -6,8 +6,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { BookingsPage } from './bookings.page';
-import { CreateBookingComponent } from './create-booking/create-booking.component';
 import { EditBookingComponent } from './edit-booking/edit-booking.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 const routes: Routes = [
   {
@@ -21,7 +21,8 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    ReactiveFormsModule
   ],
   declarations: [BookingsPage, EditBookingComponent],
   entryComponents: [EditBookingComponent]

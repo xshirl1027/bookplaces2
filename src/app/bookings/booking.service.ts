@@ -111,8 +111,12 @@ export class BookingService {
         take(1),
         tap(bookings => {
           newBooking.id = generatedId;
-          bookings=bookings.filter(booking=>booking.id!=id);
-          this._bookings.next(bookings.concat(newBooking));
+          for(let i in bookings){
+            if (bookings[i].id===id){
+              bookings[i] = newBooking;
+            }
+          }
+          this._bookings.next(bookings);
         })
       );
   }

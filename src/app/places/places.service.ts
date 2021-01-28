@@ -36,7 +36,7 @@ export class PlacesService {
     return this.authService.userId.pipe(switchMap(userId=>{
       return this.http
         .get<{ [key: string]: PlaceData }>(
-          `${environment.firebaseUrl}/places.json`
+          `${environment.firebaseUrl}/places.json?auth=${environment.firebaseDBSecret}`
         )
         .pipe(
           map(resData => {
@@ -71,7 +71,7 @@ export class PlacesService {
     return this.authService.user.pipe(switchMap(user=>{
       return this.http
         .get<{ [key: string]: PlaceData }>(
-          `${environment.firebaseUrl}/places.json`
+          `${environment.firebaseUrl}/places.json?auth=${environment.firebaseDBSecret}`
         )
         .pipe(
           map(resData => {
@@ -105,7 +105,7 @@ export class PlacesService {
   getPlace(id: string) {
     return this.http
       .get<PlaceData>(
-        `${environment.firebaseUrl}/places/${id}.json`
+        `${environment.firebaseUrl}/places/${id}.json?auth=${environment.firebaseDBSecret}`
       )
       .pipe(
         map(placeData => {
@@ -153,7 +153,7 @@ export class PlacesService {
           imageDataURL
         );
         return this.http.post<{ name: string }>(
-          `${environment.firebaseUrl}/places.json`,
+          `${environment.firebaseUrl}/places.json?auth=${environment.firebaseDBSecret}`,
           {
             ...newPlace,
             id: null
@@ -174,7 +174,7 @@ export class PlacesService {
 
   deletePlace(placeId: string) {
     return this.http.delete(
-      `${environment.firebaseUrl}/places/${placeId}.json`
+      `${environment.firebaseUrl}/places/${placeId}.json?auth=${environment.firebaseDBSecret}`
     );
   }
 
@@ -194,7 +194,7 @@ export class PlacesService {
         updatedPlaces = [...places];
         updatedPlaces[updatedPlaceIndex] = place;
         return this.http.put(
-          `${environment.firebaseUrl}/places/${place.id}.json`,
+          `${environment.firebaseUrl}/places/${place.id}.json?auth=${environment.firebaseDBSecret}`,
           { ...updatedPlaces[updatedPlaceIndex], id: null }
         );
       }),

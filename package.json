@@ -7,7 +7,6 @@
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
   "scripts": {
-    "ionic": "ng",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
@@ -30,6 +29,7 @@
     "@ionic/angular": "^5.0.0",
     "@ionic/pwa-elements": "^3.0.2",
     "firebase": "^8.2.3",
+    "ng": "0.0.0",
     "require": "^2.4.20",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",

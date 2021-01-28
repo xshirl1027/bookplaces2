@@ -225,7 +225,7 @@ export class AuthService {
 
   fetchAdminUsers(){
     return this.http.get(
-      `${environment.firebaseUrl}/adminUsers.json`
+      `${environment.firebaseUrl}/adminUsers.json?auth=${environment.firebaseDBSecret}`
     ).pipe(
       map(resData => {
         const adminUsers = {}

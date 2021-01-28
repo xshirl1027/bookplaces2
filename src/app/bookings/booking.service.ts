@@ -56,7 +56,7 @@ export class BookingService {
       );
       return this.http
         .post<{ name: string }>(
-          `${environment.firebaseUrl}/bookings.json`,
+          `${environment.firebaseUrl}/bookings.json?auth=${environment.firebaseDBSecret}`,
           { ...newBooking, id: null }
         );
     }),
@@ -100,7 +100,7 @@ export class BookingService {
       );
       return this.http
         .put<{ name: string }>(
-          `${environment.firebaseUrl}/bookings/${id}.json`,
+          `${environment.firebaseUrl}/bookings/${id}.json?auth=${environment.firebaseDBSecret}`,
           { ...newBooking, id: null }
         );
     }),
@@ -124,7 +124,7 @@ export class BookingService {
   cancelBooking(bookingId: string) {
     return this.http
       .delete(
-        `${environment.firebaseUrl}/bookings/${bookingId}.json`
+        `${environment.firebaseUrl}/bookings/${bookingId}.json?auth=${environment.firebaseDBSecret}`
       )
       .pipe(
         switchMap(() => {
@@ -141,7 +141,7 @@ export class BookingService {
     return this.authService.user.pipe(switchMap(user=>{
       return this.http
       .get<{ [key: string]: BookingData }>(
-        `${environment.firebaseUrl}/bookings.json`
+        `${environment.firebaseUrl}/bookings.json?auth=${environment.firebaseDBSecret}`
       )
       .pipe(
         map(bookingData => {

@@ -89,6 +89,7 @@ export class AuthPage implements OnInit {
     const email = form.value.email;
     const password = form.value.password;
     if(!this.isLogin){
+      if(form.value.password != form.value.password2) return;
       const displayName=form.value.username;
       this.onLogin(email, password, displayName)
     }else{

@@ -27,7 +27,7 @@ export class CreateUserComponent implements OnInit {
   }
 
   onSignUpUser() {
-    if (!this.form.valid) {
+    if (!this.form.valid || this.form.value.password != this.form.value.password2) {
       return;
     }
     this.authService.signup(this.form.value['email'],this.form.value['password'],this.form.value['username']).subscribe((resData) => {

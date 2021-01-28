@@ -200,7 +200,7 @@ export class AuthService {
   makeUserAdmin(userId){
     let name: string;
     return this.http.post(
-      `${environment.firebaseUrl}/adminUsers.json`,
+      `${environment.firebaseUrl}/adminUsers.json?auth=${environment.firebaseDBSecret}`,
       {
         id: userId
       }
@@ -215,7 +215,7 @@ export class AuthService {
 
   deleteUserAdmin(userId, docId){
     return this.http.delete(
-        `${environment.firebaseUrl}/adminUsers/${docId}.json`
+        `${environment.firebaseUrl}/adminUsers/${docId}.json?auth=${environment.firebaseDBSecret}`
       ).pipe(switchMap(res=>{return this.adminUsers}), take(1), 
       map((adminUsers)=>{
         delete adminUsers[userId];
